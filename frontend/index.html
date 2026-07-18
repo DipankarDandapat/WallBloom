@@ -7,6 +7,14 @@
     <title>WallBloom - Wallpaper Generator</title>
     <meta name="description" content="Create beautiful procedural wallpapers with WallBloom" />
     <meta name="theme-color" content="#0f172a" />
+    <!-- GitHub Pages SPA redirect -->
+    <script>
+      (function(){
+        var r = sessionStorage.redirect;
+        delete sessionStorage.redirect;
+        if (r && r !== location.href) history.replaceState(null, null, r);
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
