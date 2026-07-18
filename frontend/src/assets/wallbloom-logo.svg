@@ -1,0 +1,21 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="flowerGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFB6C1"/>
+      <stop offset="100%" stop-color="#F48FB1"/>
+    </linearGradient>
+  </defs>
+  <rect x="32" y="32" width="448" height="448" rx="96" fill="#F9F6F2"/>
+  <text x="256" y="285" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="220" font-weight="700" fill="#355E4B">W</text>
+  <path d="M285 270 C290 315 285 350 260 385" stroke="#355E4B" stroke-width="7" fill="none" stroke-linecap="round"/>
+  <ellipse cx="248" cy="340" rx="14" ry="28" fill="#5E8C61" transform="rotate(-35 248 340)"/>
+  <ellipse cx="282" cy="330" rx="14" ry="28" fill="#5E8C61" transform="rotate(35 282 330)"/>
+  <g transform="translate(300 255)">
+    <circle cx="0" cy="0" r="10" fill="#3D3D3D"/>
+    <circle cx="-18" cy="-10" r="18" fill="url(#flowerGradient)"/>
+    <circle cx="18" cy="-10" r="18" fill="url(#flowerGradient)"/>
+    <circle cx="-18" cy="12" r="18" fill="url(#flowerGradient)"/>
+    <circle cx="18" cy="12" r="18" fill="url(#flowerGradient)"/>
+    <circle cx="0" cy="-24" r="18" fill="url(#flowerGradient)"/>
+  </g>
+</svg>
