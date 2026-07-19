@@ -1,4 +1,4 @@
-# AuraWall Backend - FastAPI
+# WallBloom Backend - FastAPI
 
 Simple, stateless FastAPI backend for wallpaper generation. No authentication, no database required.
 
@@ -63,8 +63,7 @@ Response:
 ```json
 {
   "patterns": [
-    {"type": "hills", "name": "Hills", "description": "A hills pattern"},
-    ...
+    {"type": "hills", "name": "Hills", "description": "A hills pattern"}
   ]
 }
 ```
@@ -85,8 +84,7 @@ Response:
     "is_preset": true,
     "created_at": "2024-01-01T00:00:00",
     "updated_at": "2024-01-01T00:00:00"
-  },
-  ...
+  }
 ]
 ```
 
@@ -338,11 +336,3 @@ gunicorn main:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bin
 - **Render**: Connect GitHub repo
 - **AWS**: Elastic Beanstalk, Lambda
 - **Google Cloud**: Cloud Run
-
-## License
-
-MIT License
-
-## Support
-
-Check API docs at http://localhost:8000/docs

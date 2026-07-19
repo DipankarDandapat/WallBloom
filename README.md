@@ -62,7 +62,7 @@ aurawall-fixed/
 │   ├── main.py                       # FastAPI application
 │   ├── pattern_engine.py             # Pattern generation engine
 │   ├── requirements.txt              # Python dependencies
-│   ├── .env.example                  # Environment template
+│   ├── .env                          # Environment template
 │   └── README.md                     # Backend documentation
 │
 ├── frontend/                         # React 18 frontend
@@ -79,7 +79,7 @@ aurawall-fixed/
 │   ├── tsconfig.json                # TypeScript config
 │   ├── tailwind.config.js           # Tailwind CSS config
 │   ├── index.html                   # HTML entry
-│   ├── .env.example                 # Environment template
+│   ├── .env                         # Environment template
 │   └── README.md                    # Frontend documentation
 │
 ├── SETUP_GUIDE.md                    # Complete setup guide

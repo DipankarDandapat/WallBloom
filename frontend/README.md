@@ -1,4 +1,4 @@
-# AuraWall Frontend - React
+# WallBloom Frontend - React
 
 Modern React 18 + TypeScript frontend for the  wallpaper generator.
 

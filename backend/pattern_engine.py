@@ -1,5 +1,5 @@
 """
-Pattern generation engine for AuraWall
+Pattern generation engine for WallBloom
 Generates procedural wallpapers with deterministic output based on seed
 """
 

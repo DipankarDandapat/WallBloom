@@ -5,8 +5,8 @@ Complete guide to run the wallpaper generator (Python backend + React frontend).
 ## 📦 What You Have
 
 ### Backend (Python FastAPI)
-- 10 procedural patterns
-- 12 color palettes
+- 10 + procedural patterns
+- 12 + color palettes
 - High-resolution image export
 - No authentication required
 - No database required
