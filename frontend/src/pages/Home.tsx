@@ -14,6 +14,18 @@ const PATTERN_ICONS: Record<string, string> = {
   starburst: '✨', weave: '🧺', pebbles: '🪨', chevron: '〽️', fractal: '🔺',
   cobweb: '🕸', origami: '📐', noodles: '🍜', crystals: '💠', smoke: '💨',
   labyrinth: '🌀', polka: '🔵', feathers: '🪶', scales: '🐟', crosshatch: '✖️',
+  dna: '🧬', binary_rain: '💻', radar: '📡', topographic: '🗾', waveform: '〰️',
+  satellite: '🛰️', sonar: '🔊', datastream: '📊', fiber_optic: '🔆', neural: '🧠',
+  coral: '🪸', snowflakes: '❄️', raindrops: '🌧', vines: '🌿', clouds: '☁️',
+  bamboo: '🎋', cracks: '🪨', roots: '🌱',
+  voronoi: '🔹', kaleidoscope: '🔮', triangular_mesh: '📐', pinwheel: '🎡', prism: '🔻', hypnotic: '🌐',
+  plasma: '⚡', interference: '〰️', turbulence: '🌪', ink_blot: '🖋', watercolor: '🎨', pointillism: '🔴',
+  maze: '🧩', constellation: '⭐', lace: '🕸', glitch: '📺',
+  stained_glass: '🪟', topsoil: '🌾', fish_net: '🎣', honeycomb_flow: '🍯',
+  pixel_sort: '🖥️', sand_ripple: '🏖️', tree_rings: '🌳', lightning_field: '⚡',
+  soap_bubble: '🫧', celtic_knot: '☘️', meteor_shower: '🌠', lenticular: '🌈',
+  brush_grid: '🖌️', neon_grid: '🔲', patchwork: '🧩', sunburst: '☀️',
+  droplets: '💧', wire_frame: '📐',
 };
 
 function useClock() {
@@ -90,6 +102,8 @@ export default function Home() {
   const [mobileLoading, setMobileLoading] = useState(false);
   const [downloadingDesktop, setDownloadingDesktop] = useState(false);
   const [downloadingMobile, setDownloadingMobile] = useState(false);
+  const [showAllPatterns, setShowAllPatterns] = useState(false);
+  const [showAllPalettes, setShowAllPalettes] = useState(false);
   const now = useClock();
 
   useEffect(() => {
@@ -177,15 +191,47 @@ export default function Home() {
         {/* ── PREVIEW ── */}
         <section>
           <div className="flex items-center gap-1.5 mb-4 flex-wrap">
-            <span className="text-sm sm:text-lg">{PATTERN_ICONS[selectedPattern] ?? '🎨'}</span>
-            <h2 className={`text-xs sm:text-base font-semibold ${darkMode ? 'text-white' : 'text-slate-900'}`}>{selectedPatternName}</h2>
-            <span className={darkMode ? 'text-slate-600' : 'text-slate-400'}>·</span>
-            <div className="flex gap-0.5 rounded overflow-hidden h-3 w-8 sm:h-4 sm:w-10">
-              {palettes[selectedPalette]?.colors.slice(0, 4).map((c, i) => (
-                <div key={i} className="flex-1" style={{ backgroundColor: c }} />
-              ))}
-            </div>
-            <span className={`text-xs sm:text-sm ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>{selectedPaletteName}</span>
+            {blendMode ? (
+              <>
+                {/* Pattern A */}
+                <span className="text-sm sm:text-lg">{PATTERN_ICONS[selectedPattern] ?? '🎨'}</span>
+                <h2 className={`text-xs sm:text-base font-semibold ${darkMode ? 'text-white' : 'text-slate-900'}`}>
+                  {patterns.find(p => p.type === selectedPattern)?.name ?? selectedPattern}
+                </h2>
+                <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded ${darkMode ? 'bg-indigo-500/20 text-indigo-300' : 'bg-indigo-100 text-indigo-600'}`}>
+                  {Math.round((1 - blendRatio) * 100)}%
+                </span>
+                {/* Blend arrow */}
+                <span className={`text-xs font-bold ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>⟷</span>
+                <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded ${darkMode ? 'bg-purple-500/20 text-purple-300' : 'bg-purple-100 text-purple-600'}`}>
+                  {Math.round(blendRatio * 100)}%
+                </span>
+                {/* Pattern B */}
+                <span className="text-sm sm:text-lg">{PATTERN_ICONS[blendPattern] ?? '🎨'}</span>
+                <h2 className={`text-xs sm:text-base font-semibold ${darkMode ? 'text-white' : 'text-slate-900'}`}>
+                  {patterns.find(p => p.type === blendPattern)?.name ?? blendPattern}
+                </h2>
+                <span className={darkMode ? 'text-slate-600' : 'text-slate-400'}>·</span>
+                <div className="flex gap-0.5 rounded overflow-hidden h-3 w-8 sm:h-4 sm:w-10">
+                  {palettes[selectedPalette]?.colors.slice(0, 4).map((c, i) => (
+                    <div key={i} className="flex-1" style={{ backgroundColor: c }} />
+                  ))}
+                </div>
+                <span className={`text-xs sm:text-sm ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>{selectedPaletteName}</span>
+              </>
+            ) : (
+              <>
+                <span className="text-sm sm:text-lg">{PATTERN_ICONS[selectedPattern] ?? '🎨'}</span>
+                <h2 className={`text-xs sm:text-base font-semibold ${darkMode ? 'text-white' : 'text-slate-900'}`}>{selectedPatternName}</h2>
+                <span className={darkMode ? 'text-slate-600' : 'text-slate-400'}>·</span>
+                <div className="flex gap-0.5 rounded overflow-hidden h-3 w-8 sm:h-4 sm:w-10">
+                  {palettes[selectedPalette]?.colors.slice(0, 4).map((c, i) => (
+                    <div key={i} className="flex-1" style={{ backgroundColor: c }} />
+                  ))}
+                </div>
+                <span className={`text-xs sm:text-sm ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>{selectedPaletteName}</span>
+              </>
+            )}
             <span className={`ml-auto text-[10px] italic hidden sm:inline ${darkMode ? 'text-slate-600' : 'text-slate-400'}`}>Preview only — downloads are clean</span>
           </div>
 
@@ -295,7 +341,7 @@ export default function Home() {
             </div>
           </div>
           <div className="grid grid-cols-5 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-1.5 sm:gap-2">
-            {patterns.map(p => (
+            {(showAllPatterns ? patterns : patterns.slice(0, 40)).map(p => (
               <button
                 key={p.type}
                 onClick={() => setSelectedPattern(p.type)}
@@ -314,6 +360,18 @@ export default function Home() {
               </button>
             ))}
           </div>
+          {patterns.length > 40 && (
+            <div className="flex justify-center mt-3">
+              <button
+                onClick={() => setShowAllPatterns(!showAllPatterns)}
+                className={`flex items-center gap-2 px-4 py-2 border text-xs font-medium rounded-lg transition-all ${
+                  darkMode ? 'border-white/[0.08] text-slate-400 hover:text-white hover:border-white/20' : 'border-slate-300 text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                }`}
+              >
+                {showAllPatterns ? '↑ Show Less' : `↓ View More (${patterns.length - 40} more)`}
+              </button>
+            </div>
+          )}
 
           {/* ── BLEND CONTROLS ── */}
           {blendMode && (
@@ -322,7 +380,7 @@ export default function Home() {
                 <Layers className="w-3.5 h-3.5" /> Blend with second pattern
               </p>
               <div className="grid grid-cols-5 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-1.5 sm:gap-2">
-                {patterns.map(p => (
+                {(showAllPatterns ? patterns : patterns.slice(0, 40)).map(p => (
                   <button
                     key={p.type}
                     onClick={() => setBlendPattern(p.type)}
@@ -373,7 +431,7 @@ export default function Home() {
             </button>
           </div>
           <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-7 gap-1.5 sm:gap-2">
-            {palettes.map((pal, idx) => (
+            {(showAllPalettes ? palettes : palettes.slice(0, 40)).map((pal, idx) => (
               <button
                 key={pal.id}
                 onClick={() => setSelectedPalette(idx)}
@@ -396,6 +454,18 @@ export default function Home() {
               </button>
             ))}
           </div>
+          {palettes.length > 40 && (
+            <div className="flex justify-center mt-3">
+              <button
+                onClick={() => setShowAllPalettes(!showAllPalettes)}
+                className={`flex items-center gap-2 px-4 py-2 border text-xs font-medium rounded-lg transition-all ${
+                  darkMode ? 'border-white/[0.08] text-slate-400 hover:text-white hover:border-white/20' : 'border-slate-300 text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                }`}
+              >
+                {showAllPalettes ? '↑ Show Less' : `↓ View More (${palettes.length - 40} more)`}
+              </button>
+            </div>
+          )}
         </section>
 
         <div className="pb-6" />

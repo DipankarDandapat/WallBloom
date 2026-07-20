@@ -5,6 +5,7 @@ FastAPI application - NO AUTHENTICATION (open access)
 
 import os
 import logging
+from contextlib import asynccontextmanager
 from datetime import datetime
 from fastapi import FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
@@ -20,11 +21,18 @@ from pattern_engine import (
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    logger.info("✓ WallBloom Backend Started")
+    yield
+    logger.info("✓ WallBloom Backend Shutdown")
+
 # Initialize FastAPI app
 app = FastAPI(
     title="WallBloom API",
     description="AI-powered wallpaper generator backend",
-    version="1.0.0"
+    version="1.0.0",
+    lifespan=lifespan
 )
 
 # Add CORS middleware
@@ -50,20 +58,6 @@ class WallpaperResponse(BaseModel):
     seed: int
     inverted: bool
     created_at: str
-
-# ============================================================================
-# Startup and Shutdown Events
-# ============================================================================
-
-@app.on_event("startup")
-async def startup_event():
-    """Initialize on startup"""
-    logger.info("✓ WallBloom Backend Started")
-
-@app.on_event("shutdown")
-async def shutdown_event():
-    """Cleanup on shutdown"""
-    logger.info("✓ WallBloom Backend Shutdown")
 
 # ============================================================================
 # Health Check

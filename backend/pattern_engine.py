@@ -56,6 +56,58 @@ class PatternType(str, Enum):
     FEATHERS = "feathers"
     SCALES = "scales"
     CROSSHATCH = "crosshatch"
+    DNA = "dna"
+    BINARY_RAIN = "binary_rain"
+    RADAR = "radar"
+    TOPOGRAPHIC = "topographic"
+    WAVEFORM = "waveform"
+    SATELLITE = "satellite"
+    SONAR = "sonar"
+    DATASTREAM = "datastream"
+    FIBER_OPTIC = "fiber_optic"
+    NEURAL = "neural"
+    CORAL = "coral"
+    SNOWFLAKES = "snowflakes"
+    RAINDROPS = "raindrops"
+    VINES = "vines"
+    CLOUDS = "clouds"
+    BAMBOO = "bamboo"
+    CRACKS = "cracks"
+    ROOTS = "roots"
+    VORONOI = "voronoi"
+    KALEIDOSCOPE = "kaleidoscope"
+    TRIANGULAR_MESH = "triangular_mesh"
+    PINWHEEL = "pinwheel"
+    PRISM = "prism"
+    HYPNOTIC = "hypnotic"
+    PLASMA = "plasma"
+    INTERFERENCE = "interference"
+    TURBULENCE = "turbulence"
+    INK_BLOT = "ink_blot"
+    WATERCOLOR = "watercolor"
+    POINTILLISM = "pointillism"
+    MAZE = "maze"
+    CONSTELLATION = "constellation"
+    LACE = "lace"
+    GLITCH = "glitch"
+    STAINED_GLASS = "stained_glass"
+    TOPSOIL = "topsoil"
+    FISH_NET = "fish_net"
+    HONEYCOMB_FLOW = "honeycomb_flow"
+    PIXEL_SORT = "pixel_sort"
+    SAND_RIPPLE = "sand_ripple"
+    TREE_RINGS = "tree_rings"
+    LIGHTNING_FIELD = "lightning_field"
+    SOAP_BUBBLE = "soap_bubble"
+    CELTIC_KNOT = "celtic_knot"
+    METEOR_SHOWER = "meteor_shower"
+    LENTICULAR = "lenticular"
+    BRUSH_GRID = "brush_grid"
+    NEON_GRID = "neon_grid"
+    PATCHWORK = "patchwork"
+    SUNBURST = "sunburst"
+    DROPLETS = "droplets"
+    WIRE_FRAME = "wire_frame"
 
 # Color palettes
 PRESET_PALETTES = [
@@ -198,6 +250,66 @@ PRESET_PALETTES = [
     {
         "name": "Northern Lights",
         "colors": ["#020b18", "#0d4f3c", "#1aff9c", "#b3fff0"]
+    },
+    {
+        "name": "Coral Reef",
+        "colors": ["#003049", "#d62828", "#f77f00", "#fcbf49"]
+    },
+    {
+        "name": "Lavender",
+        "colors": ["#1a0533", "#6b2d8b", "#b57bee", "#e8d5f5"]
+    },
+    {
+        "name": "Copper",
+        "colors": ["#1a0a00", "#7c3a1e", "#b87333", "#f0c080"]
+    },
+    {
+        "name": "Teal Storm",
+        "colors": ["#001a1a", "#004d4d", "#009999", "#66ffff"]
+    },
+    {
+        "name": "Sakura Night",
+        "colors": ["#0d0010", "#3d0030", "#cc3399", "#ffccee"]
+    },
+    {
+        "name": "Amber",
+        "colors": ["#1a0d00", "#7a3b00", "#e08000", "#ffd580"]
+    },
+    {
+        "name": "Slate Blue",
+        "colors": ["#0a0f1e", "#1e3a5f", "#4a7fc1", "#a8c8f0"]
+    },
+    {
+        "name": "Jade",
+        "colors": ["#001a0d", "#004d26", "#00a86b", "#80ffc0"]
+    },
+    {
+        "name": "Crimson",
+        "colors": ["#0d0000", "#4d0011", "#cc0033", "#ff6680"]
+    },
+    {
+        "name": "Moonlight",
+        "colors": ["#05050f", "#1a1a3e", "#9999cc", "#e8e8ff"]
+    },
+    {
+        "name": "Tangerine",
+        "colors": ["#1a0500", "#7a2600", "#e05c00", "#ffb380"]
+    },
+    {
+        "name": "Seafoam",
+        "colors": ["#001a14", "#00664d", "#33cc99", "#b3ffe6"]
+    },
+    {
+        "name": "Obsidian",
+        "colors": ["#000000", "#0d0d0d", "#1a1a1a", "#4d4d4d"]
+    },
+    {
+        "name": "Bubblegum",
+        "colors": ["#ff80bf", "#ff99cc", "#ffccee", "#fff0f8"]
+    },
+    {
+        "name": "Toxic",
+        "colors": ["#0a1a00", "#1a4d00", "#66cc00", "#ccff33"]
     }
 ]
 
@@ -906,25 +1018,24 @@ def generate_chevron(draw, width, height, colors, rng):
 
 
 def generate_fractal(draw, width, height, colors, rng):
-    """Recursive Sierpinski-inspired triangle subdivision"""
+    """Iterative Sierpinski-inspired triangle subdivision"""
     bg = hex_to_rgb(colors[0])
     draw.rectangle([0, 0, width, height], fill=bg)
-
-    def subdivide(pts, depth, ci):
-        if depth == 0:
-            draw.polygon(pts, fill=hex_to_rgb(colors[ci % len(colors)]))
-            return
-        ax, ay = pts[0]; bx, by = pts[1]; cx2, cy2 = pts[2]
-        m1 = ((ax + bx) / 2, (ay + by) / 2)
-        m2 = ((bx + cx2) / 2, (by + cy2) / 2)
-        m3 = ((ax + cx2) / 2, (ay + cy2) / 2)
-        subdivide([pts[0], m1, m3], depth - 1, ci)
-        subdivide([m1, pts[1], m2], depth - 1, ci + 1)
-        subdivide([m3, m2, pts[2]], depth - 1, ci + 2)
-
     margin = 20
-    subdivide([(width // 2, margin), (width - margin, height - margin), (margin, height - margin)],
-              rng.randint(3, 5), 1)
+    depth = rng.randint(3, 5)
+    stack = [([(width//2, margin), (width-margin, height-margin), (margin, height-margin)], depth, 1)]
+    while stack:
+        pts, d, ci = stack.pop()
+        if d == 0:
+            draw.polygon(pts, fill=hex_to_rgb(colors[ci % len(colors)]))
+            continue
+        ax, ay = pts[0]; bx, by = pts[1]; cx2, cy2 = pts[2]
+        m1 = ((ax+bx)/2, (ay+by)/2)
+        m2 = ((bx+cx2)/2, (by+cy2)/2)
+        m3 = ((ax+cx2)/2, (ay+cy2)/2)
+        stack.append(([pts[0], m1, m3], d-1, ci))
+        stack.append(([m1, pts[1], m2], d-1, ci+1))
+        stack.append(([m3, m2, pts[2]], d-1, ci+2))
 
 
 def generate_cobweb(draw, width, height, colors, rng):
@@ -1089,6 +1200,879 @@ def generate_crosshatch(draw, width, height, colors, rng):
         draw.line([(start, 0), (start - height, height)], fill=c2, width=lw)
 
 
+def generate_dna(draw, width, height, colors, rng):
+    bg = hex_to_rgb(colors[0])
+    draw.rectangle([0, 0, width, height], fill=bg)
+    strands = rng.randint(3, 7)
+    for s in range(strands):
+        cx = int(width * (s + 1) / (strands + 1))
+        rgb1 = hex_to_rgb(colors[(s + 1) % len(colors)])
+        rgb2 = hex_to_rgb(colors[(s + 2) % len(colors)])
+        for y in range(0, height, 6):
+            t = y / height
+            angle = t * 6 * math.pi
+            x1 = cx + int(30 * math.cos(angle))
+            x2 = cx + int(30 * math.cos(angle + math.pi))
+            draw.ellipse([x1-5, y-5, x1+5, y+5], fill=rgb1)
+            draw.ellipse([x2-5, y-5, x2+5, y+5], fill=rgb2)
+            if y % 30 == 0:
+                draw.line([(x1, y), (x2, y)], fill=rgb1, width=2)
+
+def generate_binary_rain(draw, width, height, colors, rng):
+    bg = hex_to_rgb(colors[0])
+    draw.rectangle([0, 0, width, height], fill=bg)
+    col_w = rng.randint(18, 30)
+    for x in range(0, width, col_w):
+        rgb = hex_to_rgb(colors[(x // col_w) % len(colors)])
+        length = rng.randint(height // 4, height)
+        start_y = rng.randint(0, height)
+        for i in range(length // 14):
+            y = (start_y + i * 14) % height
+            bit = rng.choice(['0', '1'])
+            alpha = int(255 * (1 - i / (length // 14)))
+            c = tuple(int(v * alpha / 255) for v in rgb)
+            draw.text((x, y), bit, fill=c) if hasattr(draw, 'text') else draw.rectangle([x, y, x+8, y+10], fill=c)
+
+def generate_radar(draw, width, height, colors, rng):
+    bg = hex_to_rgb(colors[0])
+    draw.rectangle([0, 0, width, height], fill=bg)
+    cx, cy = width // 2, height // 2
+    max_r = min(cx, cy)
+    rgb1 = hex_to_rgb(colors[1 % len(colors)])
+    rgb2 = hex_to_rgb(colors[2 % len(colors)])
+    for r in range(max_r, 0, -max_r // 6):
+        draw.ellipse([cx-r, cy-r, cx+r, cy+r], outline=rgb1, width=1)
+    for i in range(8):
+        angle = i * math.pi / 4
+        draw.line([(cx, cy), (int(cx + max_r * math.cos(angle)), int(cy + max_r * math.sin(angle)))], fill=rgb1, width=1)
+    sweep = rng.uniform(0, 2 * math.pi)
+    for i in range(60):
+        a = sweep - i * 0.05
+        fade = int(200 * (1 - i / 60))
+        fc = tuple(int(v * fade / 255) for v in rgb2)
+        draw.line([(cx, cy), (int(cx + max_r * math.cos(a)), int(cy + max_r * math.sin(a)))], fill=fc, width=2)
+    blip_count = rng.randint(3, 8)
+    for _ in range(blip_count):
+        bx = cx + rng.randint(-max_r, max_r)
+        by = cy + rng.randint(-max_r, max_r)
+        draw.ellipse([bx-4, by-4, bx+4, by+4], fill=rgb2)
+
+def generate_topographic(draw, width, height, colors, rng):
+    bg = hex_to_rgb(colors[0])
+    draw.rectangle([0, 0, width, height], fill=bg)
+    centers = [(rng.randint(width//4, 3*width//4), rng.randint(height//4, 3*height//4)) for _ in range(rng.randint(2, 4))]
+    levels = rng.randint(8, 14)
+    step = 4  # coarser sampling for performance
+    sigma2 = 2 * (width * 0.3) ** 2
+    n = len(centers)
+    for li in range(levels):
+        rgb = hex_to_rgb(colors[(li % (len(colors)-1)) + 1])
+        threshold = (li + 1) / (levels + 1)
+        for x in range(0, width, step):
+            for y in range(0, height, step):
+                v = sum(math.exp(-((x-cx)**2+(y-cy)**2)/sigma2) for cx,cy in centers) / n
+                if abs(v - threshold) < 0.025:
+                    draw.rectangle([x, y, x+step-1, y+step-1], fill=rgb)
+
+def generate_waveform(draw, width, height, colors, rng):
+    bg = hex_to_rgb(colors[0])
+    draw.rectangle([0, 0, width, height], fill=bg)
+    num_waves = rng.randint(3, 6)
+    for i in range(num_waves):
+        rgb = hex_to_rgb(colors[(i+1) % len(colors)])
+        cy = int(height * (i+1) / (num_waves+1))
+        freqs = [rng.uniform(0.005, 0.03) for _ in range(3)]
+        amps = [rng.randint(10, 40) for _ in range(3)]
+        pts = []
+        for x in range(width):
+            y = cy + sum(int(amps[j]*math.sin(x*freqs[j])) for j in range(3))
+            pts.append((x, y))
+        for j in range(len(pts)-1):
+            draw.line([pts[j], pts[j+1]], fill=rgb, width=2)
+
+def generate_satellite(draw, width, height, colors, rng):
+    bg = hex_to_rgb(colors[0])
+    draw.rectangle([0, 0, width, height], fill=bg)
+    grid = rng.randint(60, 100)
+    rgb1 = hex_to_rgb(colors[1 % len(colors)])
+    rgb2 = hex_to_rgb(colors[2 % len(colors)])
+    for y in range(0, height, grid):
+        for x in range(0, width, grid):
+            draw.rectangle([x, y, x+grid, y+grid], outline=rgb1, width=1)
+            cx, cy = x + grid//2, y + grid//2
+            draw.ellipse([cx-4, cy-4, cx+4, cy+4], fill=rgb2)
+            if rng.random() > 0.5:
+                draw.line([(cx-grid//3, cy), (cx+grid//3, cy)], fill=rgb1, width=1)
+                draw.line([(cx, cy-grid//3), (cx, cy+grid//3)], fill=rgb1, width=1)
+
+def generate_sonar(draw, width, height, colors, rng):
+    bg = hex_to_rgb(colors[0])
+    draw.rectangle([0, 0, width, height], fill=bg)
+    num_sources = rng.randint(2, 4)
+    for si in range(num_sources):
+        cx = rng.randint(width//4, 3*width//4)
+        cy = rng.randint(height//4, 3*height//4)
+        rgb = hex_to_rgb(colors[(si+1) % len(colors)])
+        max_r = int(math.sqrt(width**2+height**2))
+        gap = rng.randint(30, 60)
+        for r in range(gap, max_r, gap*2):
+            fade = int(200 * (1 - r/max_r))
+            fc = tuple(int(v*fade//200) for v in rgb)
+            draw.ellipse([cx-r, cy-r, cx+r, cy+r], outline=fc, width=1)
+
+def generate_datastream(draw, width, height, colors, rng):
+    bg = hex_to_rgb(colors[0])
+    draw.rectangle([0, 0, width, height], fill=bg)
+    num_streams = rng.randint(8, 16)
+    for i in range(num_streams):
+        rgb = hex_to_rgb(colors[(i % (len(colors)-1))+1])
+        x = rng.randint(0, width)
+        y = 0
+        while y < height:
+            seg = rng.randint(10, 40)
+            draw.line([(x, y), (x, y+seg)], fill=rgb, width=rng.randint(1, 3))
+            y += seg + rng.randint(5, 20)
+            x += rng.randint(-20, 20)
+            x = max(0, min(width, x))
+
+def generate_fiber_optic(draw, width, height, colors, rng):
+    bg = hex_to_rgb(colors[0])
+    draw.rectangle([0, 0, width, height], fill=bg)
+    for i in range(rng.randint(20, 40)):
+        rgb = hex_to_rgb(colors[(i % (len(colors)-1))+1])
+        x, y = rng.randint(0, width), rng.randint(0, height)
+        pts = [(x, y)]
+        for _ in range(rng.randint(10, 25)):
+            x += rng.randint(-30, 30)
+            y += rng.randint(-15, 15)
+            pts.append((x, y))
+        for j in range(len(pts)-1):
+            draw.line([pts[j], pts[j+1]], fill=rgb, width=1)
+        ex, ey = pts[-1]
+        draw.ellipse([ex-3, ey-3, ex+3, ey+3], fill=rgb)
+
+def generate_neural(draw, width, height, colors, rng):
+    bg = hex_to_rgb(colors[0])
+    draw.rectangle([0, 0, width, height], fill=bg)
+    nodes = [(rng.randint(0, width), rng.randint(0, height)) for _ in range(rng.randint(20, 40))]
+    rgb1 = hex_to_rgb(colors[1 % len(colors)])
+    rgb2 = hex_to_rgb(colors[2 % len(colors)])
+    for i, (x1, y1) in enumerate(nodes):
+        for j, (x2, y2) in enumerate(nodes):
+            if i < j and math.sqrt((x2-x1)**2+(y2-y1)**2) < width//4:
+                draw.line([(x1,y1),(x2,y2)], fill=rgb1, width=1)
+    for (nx, ny) in nodes:
+        r = rng.randint(4, 10)
+        draw.ellipse([nx-r, ny-r, nx+r, ny+r], fill=rgb2)
+
+def generate_coral(draw, width, height, colors, rng):
+    bg = hex_to_rgb(colors[0])
+    draw.rectangle([0, 0, width, height], fill=bg)
+    for _ in range(rng.randint(4, 8)):
+        stack = [(rng.randint(0,width), height, math.pi/2, rng.randint(40,80), rng.randint(4,6), 1)]
+        while stack:
+            x, y, angle, length, depth, ci = stack.pop()
+            if depth == 0 or length < 3: continue
+            rgb = hex_to_rgb(colors[ci % len(colors)])
+            ex = int(x + length * math.cos(angle))
+            ey = int(y - length * math.sin(angle))
+            draw.line([(x,y),(ex,ey)], fill=rgb, width=max(1, depth))
+            stack.append((ex, ey, angle+rng.uniform(0.3,0.7), length*0.7, depth-1, ci+1))
+            stack.append((ex, ey, angle-rng.uniform(0.3,0.7), length*0.7, depth-1, ci+2))
+
+def generate_snowflakes(draw, width, height, colors, rng):
+    bg = hex_to_rgb(colors[0])
+    draw.rectangle([0, 0, width, height], fill=bg)
+    for _ in range(rng.randint(10, 25)):
+        cx = rng.randint(0, width)
+        cy = rng.randint(0, height)
+        r = rng.randint(20, 60)
+        rgb = hex_to_rgb(colors[rng.randint(1, len(colors)-1)])
+        arms = 6
+        for a in range(arms):
+            angle = a * math.pi / 3
+            ex = int(cx + r * math.cos(angle))
+            ey = int(cy + r * math.sin(angle))
+            draw.line([(cx,cy),(ex,ey)], fill=rgb, width=2)
+            for b in [0.4, 0.7]:
+                bx = int(cx + r*b*math.cos(angle))
+                by = int(cy + r*b*math.sin(angle))
+                for sign in [1, -1]:
+                    bbx = int(bx + r*0.25*math.cos(angle+sign*math.pi/3))
+                    bby = int(by + r*0.25*math.sin(angle+sign*math.pi/3))
+                    draw.line([(bx,by),(bbx,bby)], fill=rgb, width=1)
+
+def generate_raindrops(draw, width, height, colors, rng):
+    bg = hex_to_rgb(colors[0])
+    draw.rectangle([0, 0, width, height], fill=bg)
+    for i in range(rng.randint(30, 70)):
+        rgb = hex_to_rgb(colors[(i % (len(colors)-1))+1])
+        x = rng.randint(0, width)
+        y = rng.randint(0, height)
+        l = rng.randint(10, 30)
+        draw.line([(x,y),(x+rng.randint(-3,3),y+l)], fill=rgb, width=1)
+        r = rng.randint(3, 8)
+        draw.ellipse([x-r, y-r*2, x+r, y], outline=rgb, width=1)
+
+def generate_vines(draw, width, height, colors, rng):
+    bg = hex_to_rgb(colors[0])
+    draw.rectangle([0, 0, width, height], fill=bg)
+    for _ in range(rng.randint(5, 12)):
+        rgb = hex_to_rgb(colors[rng.randint(1, len(colors)-1)])
+        x, y = rng.randint(0, width), height
+        pts = [(x, y)]
+        for _ in range(rng.randint(15, 30)):
+            x += rng.randint(-20, 20)
+            y -= rng.randint(10, 30)
+            pts.append((x, y))
+        for j in range(len(pts)-1):
+            draw.line([pts[j], pts[j+1]], fill=rgb, width=2)
+        for j in range(0, len(pts), 3):
+            lx, ly = pts[j]
+            lw = rng.randint(8, 18)
+            lh = rng.randint(5, 12)
+            draw.ellipse([lx-lw, ly-lh, lx+lw, ly+lh], fill=rgb)
+
+def generate_clouds(draw, width, height, colors, rng):
+    c1, c2 = hex_to_rgb(colors[0]), hex_to_rgb(colors[1 % len(colors)])
+    for y in range(height):
+        t = y / height
+        draw.line([(0,y),(width,y)], fill=tuple(int(c1[i]*(1-t)+c2[i]*t) for i in range(3)))
+    for _ in range(rng.randint(6, 14)):
+        rgb = hex_to_rgb(colors[rng.randint(2, len(colors)-1)])
+        cx = rng.randint(0, width)
+        cy = rng.randint(0, height//2)
+        for _ in range(rng.randint(4, 8)):
+            ox = rng.randint(-40, 40)
+            oy = rng.randint(-20, 20)
+            r = rng.randint(20, 60)
+            draw.ellipse([cx+ox-r, cy+oy-r, cx+ox+r, cy+oy+r], fill=rgb)
+
+def generate_bamboo(draw, width, height, colors, rng):
+    bg = hex_to_rgb(colors[0])
+    draw.rectangle([0, 0, width, height], fill=bg)
+    for _ in range(rng.randint(8, 18)):
+        rgb = hex_to_rgb(colors[rng.randint(1, len(colors)-1)])
+        x = rng.randint(0, width)
+        seg_h = rng.randint(30, 60)
+        w = rng.randint(6, 16)
+        for y in range(0, height, seg_h):
+            draw.rectangle([x-w//2, y, x+w//2, y+seg_h-4], fill=rgb)
+            draw.line([(x-w//2-4, y+seg_h-4),(x+w//2+4, y+seg_h-4)], fill=bg, width=3)
+
+def generate_cracks(draw, width, height, colors, rng):
+    bg = hex_to_rgb(colors[0])
+    draw.rectangle([0, 0, width, height], fill=bg)
+    rgb = hex_to_rgb(colors[1 % len(colors)])
+    for _ in range(rng.randint(3, 7)):
+        stack = [(rng.randint(0,width), rng.randint(0,height), rng.uniform(0,2*math.pi), rng.randint(40,100), 5)]
+        while stack:
+            x, y, angle, length, depth = stack.pop()
+            if depth == 0 or length < 5: continue
+            ex = int(x + length * math.cos(angle))
+            ey = int(y + length * math.sin(angle))
+            draw.line([(x,y),(ex,ey)], fill=rgb, width=max(1, depth//2))
+            if rng.random() > 0.4:
+                stack.append((ex, ey, angle+rng.uniform(0.2,0.8), length*rng.uniform(0.5,0.8), depth-1))
+            if rng.random() > 0.5:
+                stack.append((ex, ey, angle-rng.uniform(0.2,0.8), length*rng.uniform(0.4,0.7), depth-1))
+
+def generate_roots(draw, width, height, colors, rng):
+    bg = hex_to_rgb(colors[0])
+    draw.rectangle([0, 0, width, height], fill=bg)
+    for _ in range(rng.randint(3, 6)):
+        stack = [(rng.randint(0,width), rng.randint(0,height//2), math.pi/2+rng.uniform(-0.5,0.5), rng.randint(50,100), 6, 1)]
+        while stack:
+            x, y, angle, length, depth, ci = stack.pop()
+            if depth == 0 or length < 4: continue
+            rgb = hex_to_rgb(colors[ci % len(colors)])
+            ex = int(x + length * math.cos(angle))
+            ey = int(y + length * math.sin(angle))
+            draw.line([(x,y),(ex,ey)], fill=rgb, width=max(1,depth//2))
+            stack.append((ex, ey, angle+rng.uniform(0.2,0.6), length*0.75, depth-1, ci+1))
+            if rng.random() > 0.4:
+                stack.append((ex, ey, angle-rng.uniform(0.2,0.6), length*0.65, depth-1, ci+2))
+
+def generate_voronoi(draw, width, height, colors, rng):
+    n = rng.randint(20, 50)
+    pts = [(rng.randint(0,width), rng.randint(0,height)) for _ in range(n)]
+    step = 4
+    for y in range(0, height, step):
+        for x in range(0, width, step):
+            nearest = min(range(n), key=lambda i: (pts[i][0]-x)**2+(pts[i][1]-y)**2)
+            rgb = hex_to_rgb(colors[nearest % len(colors)])
+            draw.rectangle([x, y, x+step, y+step], fill=rgb)
+    for (px, py) in pts:
+        draw.ellipse([px-3, py-3, px+3, py+3], fill=hex_to_rgb(colors[0]))
+
+def generate_kaleidoscope(draw, width, height, colors, rng):
+    cx, cy = width//2, height//2
+    segments = rng.randint(6, 12)
+    for i in range(rng.randint(30, 60)):
+        rgb = hex_to_rgb(colors[i % len(colors)])
+        r1 = rng.randint(10, min(cx,cy))
+        r2 = rng.randint(r1, min(cx,cy))
+        a1 = rng.uniform(0, 2*math.pi/segments)
+        a2 = a1 + rng.uniform(0.05, 0.3)
+        for s in range(segments):
+            base = s * 2 * math.pi / segments
+            pts = [
+                (cx + r1*math.cos(base+a1), cy + r1*math.sin(base+a1)),
+                (cx + r2*math.cos(base+a1), cy + r2*math.sin(base+a1)),
+                (cx + r2*math.cos(base+a2), cy + r2*math.sin(base+a2)),
+                (cx + r1*math.cos(base+a2), cy + r1*math.sin(base+a2)),
+            ]
+            draw.polygon(pts, fill=rgb)
+
+def generate_triangular_mesh(draw, width, height, colors, rng):
+    cols = rng.randint(8, 16)
+    rows = rng.randint(6, 12)
+    cw, rh = width//cols, height//rows
+    for row in range(rows+1):
+        for col in range(cols+1):
+            x, y = col*cw, row*rh
+            jx = rng.randint(-cw//4, cw//4)
+            jy = rng.randint(-rh//4, rh//4)
+            r1 = hex_to_rgb(colors[(row+col) % len(colors)])
+            r2 = hex_to_rgb(colors[(row+col+1) % len(colors)])
+            draw.polygon([(x+jx,y+jy),(x+cw,y),(x,y+rh)], fill=r1)
+            draw.polygon([(x+cw,y),(x+cw,y+rh),(x,y+rh)], fill=r2)
+
+def generate_pinwheel(draw, width, height, colors, rng):
+    bg = hex_to_rgb(colors[0])
+    draw.rectangle([0, 0, width, height], fill=bg)
+    cx, cy = width//2, height//2
+    blades = rng.randint(4, 8)
+    max_r = min(cx, cy)
+    for b in range(blades):
+        rgb = hex_to_rgb(colors[(b+1) % len(colors)])
+        base_angle = b * 2*math.pi/blades
+        twist = rng.uniform(0.3, 0.7)
+        pts = [(cx, cy)]
+        for i in range(30):
+            t = i/29
+            r = t * max_r
+            a = base_angle + t*twist*math.pi
+            pts.append((cx+r*math.cos(a), cy+r*math.sin(a)))
+        draw.polygon(pts, fill=rgb)
+
+def generate_prism(draw, width, height, colors, rng):
+    bg = hex_to_rgb(colors[0])
+    draw.rectangle([0, 0, width, height], fill=bg)
+    num_prisms = rng.randint(5, 12)
+    for i in range(num_prisms):
+        rgb = hex_to_rgb(colors[(i+1) % len(colors)])
+        cx = rng.randint(0, width)
+        cy = rng.randint(0, height)
+        h = rng.randint(40, 120)
+        w = rng.randint(20, 60)
+        angle = rng.uniform(0, math.pi)
+        pts = [
+            (cx, cy-h),
+            (cx+int(w*math.cos(angle)), cy+int(w*math.sin(angle))),
+            (cx-int(w*math.cos(angle)), cy+int(w*math.sin(angle))),
+        ]
+        draw.polygon(pts, fill=rgb)
+        side = hex_to_rgb(colors[(i+2) % len(colors)])
+        draw.polygon([(cx,cy-h),(cx+int(w*math.cos(angle)),cy+int(w*math.sin(angle))),(cx+int(w*math.cos(angle))+5,cy+int(w*math.sin(angle))+5),(cx+5,cy-h+5)], fill=side)
+
+def generate_hypnotic(draw, width, height, colors, rng):
+    cx, cy = width//2, height//2
+    rings = rng.randint(15, 30)
+    max_r = int(math.sqrt(cx**2+cy**2))
+    for i in range(rings):
+        r = int(max_r * i / rings)
+        rgb = hex_to_rgb(colors[i % len(colors)])
+        draw.ellipse([cx-r, cy-r, cx+r, cy+r], outline=rgb, width=max(1, (rings-i)//5))
+    spokes = rng.randint(8, 16)
+    for s in range(spokes):
+        angle = s * 2*math.pi/spokes
+        rgb = hex_to_rgb(colors[(s+1) % len(colors)])
+        draw.line([(cx,cy),(int(cx+max_r*math.cos(angle)),int(cy+max_r*math.sin(angle)))], fill=rgb, width=1)
+
+def generate_plasma(draw, width, height, colors, rng):
+    step = 6
+    f1 = rng.uniform(0.01, 0.03)
+    f2 = rng.uniform(0.01, 0.03)
+    f3 = rng.uniform(0.005, 0.015)
+    for y in range(0, height, step):
+        for x in range(0, width, step):
+            v = math.sin(x*f1) + math.sin(y*f2) + math.sin((x+y)*f3)
+            v = (v + 3) / 6
+            idx = int(v * (len(colors)-1))
+            rgb = hex_to_rgb(colors[idx % len(colors)])
+            draw.rectangle([x, y, x+step, y+step], fill=rgb)
+
+def generate_interference(draw, width, height, colors, rng):
+    step = 5
+    cx1, cy1 = rng.randint(0,width), rng.randint(0,height)
+    cx2, cy2 = rng.randint(0,width), rng.randint(0,height)
+    freq = rng.uniform(0.05, 0.15)
+    for y in range(0, height, step):
+        for x in range(0, width, step):
+            d1 = math.sqrt((x-cx1)**2+(y-cy1)**2)
+            d2 = math.sqrt((x-cx2)**2+(y-cy2)**2)
+            v = (math.sin(d1*freq) + math.sin(d2*freq) + 2) / 4
+            idx = int(v * (len(colors)-1))
+            draw.rectangle([x,y,x+step,y+step], fill=hex_to_rgb(colors[idx % len(colors)]))
+
+def generate_turbulence(draw, width, height, colors, rng):
+    step = 5
+    octaves = 4
+    for y in range(0, height, step):
+        for x in range(0, width, step):
+            v = 0
+            for o in range(octaves):
+                f = 0.005 * (2**o)
+                v += math.sin(x*f + rng.uniform(-0.1,0.1)) * math.cos(y*f) / (2**o)
+            v = (v + 2) / 4
+            idx = int(max(0, min(len(colors)-1, v*(len(colors)-1))))
+            draw.rectangle([x,y,x+step,y+step], fill=hex_to_rgb(colors[idx]))
+
+def generate_ink_blot(draw, width, height, colors, rng):
+    bg = hex_to_rgb(colors[0])
+    draw.rectangle([0, 0, width, height], fill=bg)
+    cx, cy = width//2, height//2
+    for i in range(rng.randint(5, 12)):
+        rgb = hex_to_rgb(colors[(i+1) % len(colors)])
+        pts = []
+        n = rng.randint(8, 16)
+        base_r = rng.randint(30, 120)
+        for j in range(n):
+            angle = 2*math.pi*j/n
+            r = base_r + rng.randint(-base_r//3, base_r//3)
+            ox = rng.randint(-width//4, width//4)
+            oy = rng.randint(-height//4, height//4)
+            pts.append((cx+ox+r*math.cos(angle), cy+oy+r*math.sin(angle)))
+        draw.polygon(pts, fill=rgb)
+
+def generate_watercolor(draw, width, height, colors, rng):
+    c1, c2 = hex_to_rgb(colors[0]), hex_to_rgb(colors[-1])
+    for y in range(height):
+        t = y/height
+        base = tuple(int(c1[i]*(1-t)+c2[i]*t) for i in range(3))
+        draw.line([(0,y),(width,y)], fill=base)
+    for _ in range(rng.randint(8, 18)):
+        rgb = hex_to_rgb(colors[rng.randint(0, len(colors)-1)])
+        cx = rng.randint(0, width)
+        cy = rng.randint(0, height)
+        for _ in range(rng.randint(5, 12)):
+            r = rng.randint(20, 80)
+            ox, oy = rng.randint(-30,30), rng.randint(-30,30)
+            af = rng.uniform(0.2, 0.5)
+            blended = tuple(int(rgb[c]*af) for c in range(3))
+            draw.ellipse([cx+ox-r, cy+oy-r, cx+ox+r, cy+oy+r], fill=blended)
+
+def generate_pointillism(draw, width, height, colors, rng):
+    bg = hex_to_rgb(colors[0])
+    draw.rectangle([0, 0, width, height], fill=bg)
+    for _ in range(rng.randint(800, 2000)):
+        rgb = hex_to_rgb(colors[rng.randint(0, len(colors)-1)])
+        x = rng.randint(0, width)
+        y = rng.randint(0, height)
+        r = rng.randint(2, 8)
+        draw.ellipse([x-r, y-r, x+r, y+r], fill=rgb)
+
+def generate_maze(draw, width, height, colors, rng):
+    bg = hex_to_rgb(colors[0])
+    draw.rectangle([0, 0, width, height], fill=bg)
+    cell = rng.randint(25, 50)
+    wall = hex_to_rgb(colors[1 % len(colors)])
+    cols_n = width // cell
+    rows_n = height // cell
+    visited = [[False]*cols_n for _ in range(rows_n)]
+    walls_h = [[True]*cols_n for _ in range(rows_n+1)]
+    walls_v = [[True]*(cols_n+1) for _ in range(rows_n)]
+    # Iterative DFS maze carving
+    stack = [(0, 0)]
+    visited[0][0] = True
+    while stack:
+        r, c = stack[-1]
+        dirs = [(0,1),(0,-1),(1,0),(-1,0)]
+        rng.rng.shuffle(dirs)
+        moved = False
+        for dr, dc in dirs:
+            nr, nc = r+dr, c+dc
+            if 0<=nr<rows_n and 0<=nc<cols_n and not visited[nr][nc]:
+                if dr==0: walls_v[r][max(c,nc)] = False
+                else: walls_h[max(r,nr)][c] = False
+                visited[nr][nc] = True
+                stack.append((nr, nc))
+                moved = True
+                break
+        if not moved:
+            stack.pop()
+    for r in range(rows_n):
+        for c in range(cols_n):
+            x, y = c*cell, r*cell
+            if walls_h[r][c]: draw.line([(x,y),(x+cell,y)], fill=wall, width=2)
+            if walls_v[r][c]: draw.line([(x,y),(x,y+cell)], fill=wall, width=2)
+    draw.line([(0,rows_n*cell),(cols_n*cell,rows_n*cell)], fill=wall, width=2)
+    draw.line([(cols_n*cell,0),(cols_n*cell,rows_n*cell)], fill=wall, width=2)
+
+def generate_constellation(draw, width, height, colors, rng):
+    bg = hex_to_rgb(colors[0])
+    draw.rectangle([0, 0, width, height], fill=bg)
+    stars = [(rng.randint(0,width), rng.randint(0,height)) for _ in range(rng.randint(40, 80))]
+    rgb1 = hex_to_rgb(colors[1 % len(colors)])
+    rgb2 = hex_to_rgb(colors[2 % len(colors)])
+    for i, (x1,y1) in enumerate(stars):
+        for j, (x2,y2) in enumerate(stars):
+            if i < j and math.sqrt((x2-x1)**2+(y2-y1)**2) < width//5:
+                draw.line([(x1,y1),(x2,y2)], fill=rgb1, width=1)
+    for (sx, sy) in stars:
+        r = rng.randint(2, 5)
+        draw.ellipse([sx-r, sy-r, sx+r, sy+r], fill=rgb2)
+
+def generate_lace(draw, width, height, colors, rng):
+    bg = hex_to_rgb(colors[0])
+    draw.rectangle([0, 0, width, height], fill=bg)
+    rgb = hex_to_rgb(colors[1 % len(colors)])
+    spacing = rng.randint(30, 60)
+    for y in range(0, height, spacing):
+        for x in range(0, width, spacing):
+            r = spacing // 2
+            draw.ellipse([x, y, x+r, y+r], outline=rgb, width=1)
+            draw.ellipse([x+r//2, y+r//2, x+r+r//2, y+r+r//2], outline=rgb, width=1)
+            draw.line([(x,y),(x+spacing,y+spacing)], fill=rgb, width=1)
+            draw.line([(x+spacing,y),(x,y+spacing)], fill=rgb, width=1)
+
+def generate_glitch(draw, width, height, colors, rng):
+    bg = hex_to_rgb(colors[0])
+    draw.rectangle([0, 0, width, height], fill=bg)
+    for _ in range(rng.randint(20, 50)):
+        rgb = hex_to_rgb(colors[rng.randint(1, len(colors)-1)])
+        y = rng.randint(0, height)
+        h = rng.randint(2, 20)
+        shift = rng.randint(-80, 80)
+        x1 = rng.randint(0, width//2)
+        x2 = rng.randint(width//2, width)
+        draw.rectangle([x1+shift, y, x2+shift, y+h], fill=rgb)
+    for _ in range(rng.randint(5, 15)):
+        rgb = hex_to_rgb(colors[rng.randint(0, len(colors)-1)])
+        x = rng.randint(0, width)
+        draw.line([(x,0),(x+rng.randint(-30,30),height)], fill=rgb, width=rng.randint(1,3))
+
+def generate_stained_glass(draw, width, height, colors, rng):
+    n = rng.randint(30, 60)
+    pts = [(rng.randint(0, width), rng.randint(0, height)) for _ in range(n)]
+    pts += [(0,0),(width,0),(0,height),(width,height)]
+    step = 5
+    for y in range(0, height, step):
+        for x in range(0, width, step):
+            nearest = min(range(len(pts)), key=lambda i: (pts[i][0]-x)**2+(pts[i][1]-y)**2)
+            rgb = hex_to_rgb(colors[nearest % len(colors)])
+            draw.rectangle([x, y, x+step, y+step], fill=rgb)
+    for i, (px, py) in enumerate(pts[:n]):
+        for j, (qx, qy) in enumerate(pts[:n]):
+            if i < j and math.sqrt((qx-px)**2+(qy-py)**2) < width//5:
+                draw.line([(px,py),(qx,qy)], fill=(0,0,0), width=2)
+
+def generate_topsoil(draw, width, height, colors, rng):
+    bg = hex_to_rgb(colors[0])
+    draw.rectangle([0, 0, width, height], fill=bg)
+    for _ in range(rng.randint(200, 500)):
+        rgb = hex_to_rgb(colors[rng.randint(0, len(colors)-1)])
+        x = rng.randint(0, width)
+        y = rng.randint(0, height)
+        w = rng.randint(4, 20)
+        h = rng.randint(2, 8)
+        angle = rng.uniform(0, math.pi)
+        cx2, cy2 = x + int(w*math.cos(angle)), y + int(w*math.sin(angle))
+        draw.line([(x,y),(cx2,cy2)], fill=rgb, width=h)
+
+def generate_fish_net(draw, width, height, colors, rng):
+    bg = hex_to_rgb(colors[0])
+    draw.rectangle([0, 0, width, height], fill=bg)
+    spacing = rng.randint(25, 55)
+    rgb1 = hex_to_rgb(colors[1 % len(colors)])
+    rgb2 = hex_to_rgb(colors[2 % len(colors)])
+    wave_amp = rng.randint(5, 15)
+    wave_freq = rng.uniform(0.02, 0.06)
+    for i, start in enumerate(range(-height, width+height, spacing)):
+        for x in range(width):
+            y = start + x + int(wave_amp * math.sin(x * wave_freq))
+            if 0 <= y < height:
+                draw.point((x, y), fill=rgb1)
+    for i, start in enumerate(range(width+height, -height, -spacing)):
+        for x in range(width):
+            y = start - x + int(wave_amp * math.sin(x * wave_freq))
+            if 0 <= y < height:
+                draw.point((x, y), fill=rgb2)
+
+def generate_honeycomb_flow(draw, width, height, colors, rng):
+    size = rng.randint(25, 55)
+    hex_w = size * 2
+    hex_h = math.sqrt(3) * size
+    flow_freq = rng.uniform(0.003, 0.008)
+    col_idx = 0
+    x = 0
+    while x < width + hex_w:
+        row_idx = 0
+        y_offset = (hex_h / 2) if (col_idx % 2) else 0
+        y = -hex_h + y_offset
+        while y < height + hex_h:
+            cx2, cy2 = x, y
+            flow = math.sin(cx2 * flow_freq + cy2 * flow_freq * 0.7)
+            ci = int((flow + 1) / 2 * (len(colors) - 1))
+            rgb = hex_to_rgb(colors[ci % len(colors)])
+            pts = [(cx2 + size*math.cos(math.radians(60*i)), cy2 + size*math.sin(math.radians(60*i))) for i in range(6)]
+            draw.polygon(pts, fill=rgb, outline=(0,0,0))
+            y += hex_h
+            row_idx += 1
+        x += hex_w * 0.75
+        col_idx += 1
+
+def generate_pixel_sort(draw, width, height, colors, rng):
+    bg = hex_to_rgb(colors[0])
+    draw.rectangle([0, 0, width, height], fill=bg)
+    stripe_h = rng.randint(3, 10)
+    for y in range(0, height, stripe_h):
+        num_segs = rng.randint(3, 8)
+        xs = sorted([rng.randint(0, width) for _ in range(num_segs)])
+        xs = [0] + xs + [width]
+        for i in range(len(xs)-1):
+            rgb = hex_to_rgb(colors[i % len(colors)])
+            shift = rng.randint(-30, 30)
+            x1, x2 = xs[i]+shift, xs[i+1]+shift
+            draw.rectangle([x1, y, x2, y+stripe_h], fill=rgb)
+
+def generate_sand_ripple(draw, width, height, colors, rng):
+    c1, c2 = hex_to_rgb(colors[0]), hex_to_rgb(colors[1 % len(colors)])
+    for y in range(height):
+        t = y / height
+        draw.line([(0,y),(width,y)], fill=tuple(int(c1[i]*(1-t)+c2[i]*t) for i in range(3)))
+    rgb = hex_to_rgb(colors[2 % len(colors)])
+    num_ripples = rng.randint(8, 18)
+    for i in range(num_ripples):
+        base_y = int(height * (i+1) / (num_ripples+1))
+        f1 = rng.uniform(0.008, 0.02)
+        f2 = rng.uniform(0.003, 0.008)
+        amp = rng.randint(3, 12)
+        pts = []
+        for x in range(width):
+            y = base_y + int(math.sin(x*f1)*amp + math.sin(x*f2+1)*amp*0.5)
+            pts.append((x, y))
+        for j in range(len(pts)-1):
+            draw.line([pts[j], pts[j+1]], fill=rgb, width=1)
+
+def generate_tree_rings(draw, width, height, colors, rng):
+    cx, cy = width//2 + rng.randint(-width//6, width//6), height//2 + rng.randint(-height//6, height//6)
+    max_r = int(math.sqrt((max(cx, width-cx))**2 + (max(cy, height-cy))**2))
+    num_rings = rng.randint(20, 45)
+    gap = max_r // num_rings
+    for i in range(num_rings, 0, -1):
+        r = i * gap
+        rgb = hex_to_rgb(colors[i % len(colors)])
+        wobble = rng.randint(2, 8)
+        pts = []
+        steps = max(60, r // 2)
+        for s in range(steps+1):
+            angle = 2*math.pi*s/steps
+            wr = r + int(wobble * math.sin(angle * rng.randint(3,7)))
+            pts.append((cx + wr*math.cos(angle), cy + wr*math.sin(angle)))
+        if len(pts) >= 3:
+            draw.polygon(pts, fill=rgb)
+
+def generate_lightning_field(draw, width, height, colors, rng):
+    bg = hex_to_rgb(colors[0])
+    draw.rectangle([0, 0, width, height], fill=bg)
+    for b in range(rng.randint(8, 18)):
+        rgb = hex_to_rgb(colors[(b % (len(colors)-1))+1])
+        x = rng.randint(0, width)
+        y = rng.randint(0, height//3)
+        stack = [(x, y, rng.uniform(math.pi*0.3, math.pi*0.7), rng.randint(30, 80), 4)]
+        while stack:
+            sx, sy, angle, length, depth = stack.pop()
+            if depth == 0 or length < 5: continue
+            ex = int(sx + length * math.cos(angle))
+            ey = int(sy + length * math.sin(angle))
+            draw.line([(sx,sy),(ex,ey)], fill=rgb, width=max(1, depth-1))
+            stack.append((ex, ey, angle+rng.uniform(0.2,0.6), length*0.7, depth-1))
+            if rng.random() > 0.45:
+                stack.append((ex, ey, angle-rng.uniform(0.2,0.6), length*0.6, depth-1))
+
+def generate_soap_bubble(draw, width, height, colors, rng):
+    bg = hex_to_rgb(colors[0])
+    draw.rectangle([0, 0, width, height], fill=bg)
+    for i in range(rng.randint(15, 35)):
+        cx2 = rng.randint(0, width)
+        cy2 = rng.randint(0, height)
+        r = rng.randint(20, 100)
+        rgb = hex_to_rgb(colors[(i+1) % len(colors)])
+        for ring in range(3):
+            rr = r - ring*2
+            if rr > 0:
+                draw.ellipse([cx2-rr, cy2-rr, cx2+rr, cy2+rr], outline=rgb, width=1)
+        hr = max(2, r//5)
+        hx = cx2 - r//3
+        hy = cy2 - r//3
+        draw.ellipse([hx-hr, hy-hr//2, hx+hr, hy+hr//2], fill=hex_to_rgb(colors[-1]))
+
+def generate_celtic_knot(draw, width, height, colors, rng):
+    bg = hex_to_rgb(colors[0])
+    draw.rectangle([0, 0, width, height], fill=bg)
+    grid = rng.randint(60, 100)
+    rgb1 = hex_to_rgb(colors[1 % len(colors)])
+    rgb2 = hex_to_rgb(colors[2 % len(colors)])
+    for gy in range(0, height, grid):
+        for gx in range(0, width, grid):
+            cx2, cy2 = gx + grid//2, gy + grid//2
+            r = grid // 2 - 4
+            draw.ellipse([cx2-r, cy2-r, cx2+r, cy2+r], outline=rgb1, width=3)
+            inner = r - 8
+            if inner > 4:
+                draw.ellipse([cx2-inner, cy2-inner, cx2+inner, cy2+inner], outline=rgb2, width=2)
+            draw.line([(gx, cy2),(gx+grid, cy2)], fill=rgb1, width=2)
+            draw.line([(cx2, gy),(cx2, gy+grid)], fill=rgb2, width=2)
+
+def generate_meteor_shower(draw, width, height, colors, rng):
+    bg = hex_to_rgb(colors[0])
+    draw.rectangle([0, 0, width, height], fill=bg)
+    for _ in range(rng.randint(30, 70)):
+        rgb = hex_to_rgb(colors[rng.randint(1, len(colors)-1)])
+        x = rng.randint(0, width)
+        y = rng.randint(0, height)
+        length = rng.randint(20, 80)
+        angle = rng.uniform(math.pi*0.55, math.pi*0.75)
+        ex = int(x + length * math.cos(angle))
+        ey = int(y + length * math.sin(angle))
+        draw.line([(x,y),(ex,ey)], fill=rgb, width=rng.randint(1,2))
+        r = rng.randint(1, 3)
+        draw.ellipse([x-r, y-r, x+r, y+r], fill=rgb)
+
+def generate_lenticular(draw, width, height, colors, rng):
+    bg = hex_to_rgb(colors[0])
+    draw.rectangle([0, 0, width, height], fill=bg)
+    num_bands = rng.randint(6, 14)
+    band_h = height // num_bands
+    for i in range(num_bands):
+        rgb = hex_to_rgb(colors[(i+1) % len(colors)])
+        y = i * band_h
+        freq = rng.uniform(0.005, 0.015)
+        amp = rng.randint(band_h//4, band_h//2)
+        pts_top, pts_bot = [], []
+        for x in range(width):
+            mid = y + band_h//2 + int(math.sin(x*freq)*amp)
+            pts_top.append((x, mid - band_h//3))
+            pts_bot.append((x, mid + band_h//3))
+        draw.polygon(pts_top + list(reversed(pts_bot)), fill=rgb)
+
+def generate_brush_grid(draw, width, height, colors, rng):
+    bg = hex_to_rgb(colors[0])
+    draw.rectangle([0, 0, width, height], fill=bg)
+    cell = rng.randint(40, 80)
+    for gy in range(0, height, cell):
+        for gx in range(0, width, cell):
+            rgb = hex_to_rgb(colors[rng.randint(0, len(colors)-1)])
+            num_strokes = rng.randint(3, 8)
+            for _ in range(num_strokes):
+                x1 = gx + rng.randint(0, cell)
+                y1 = gy + rng.randint(0, cell)
+                x2 = gx + rng.randint(0, cell)
+                y2 = gy + rng.randint(0, cell)
+                draw.line([(x1,y1),(x2,y2)], fill=rgb, width=rng.randint(1,4))
+
+def generate_neon_grid(draw, width, height, colors, rng):
+    bg = hex_to_rgb(colors[0])
+    draw.rectangle([0, 0, width, height], fill=bg)
+    spacing = rng.randint(40, 80)
+    perspective = rng.uniform(0.3, 0.7)
+    horizon = int(height * perspective)
+    vp_x = width // 2
+    rgb1 = hex_to_rgb(colors[1 % len(colors)])
+    rgb2 = hex_to_rgb(colors[2 % len(colors)])
+    for x in range(0, width+spacing, spacing):
+        draw.line([(x, height),(vp_x + int((x-vp_x)*0.1), horizon)], fill=rgb1, width=1)
+    num_h = rng.randint(6, 14)
+    for i in range(num_h):
+        t = i / num_h
+        y = int(horizon + (height - horizon) * t)
+        fade = int(200 * t)
+        fc = tuple(min(255, int(v * fade / 200)) for v in rgb2)
+        draw.line([(0, y),(width, y)], fill=fc, width=1)
+
+def generate_patchwork(draw, width, height, colors, rng):
+    min_size = rng.randint(40, 80)
+    regions = [(0, 0, width, height)]
+    for _ in range(rng.randint(20, 40)):
+        if not regions: break
+        idx = rng.randint(0, len(regions)-1)
+        x1, y1, x2, y2 = regions.pop(idx)
+        if x2-x1 < min_size*2 and y2-y1 < min_size*2: continue
+        if (x2-x1) > (y2-y1):
+            split = rng.randint(x1+min_size, x2-min_size)
+            regions += [(x1,y1,split,y2),(split,y1,x2,y2)]
+        else:
+            split = rng.randint(y1+min_size, y2-min_size)
+            regions += [(x1,y1,x2,split),(x1,split,x2,y2)]
+    for i, (x1,y1,x2,y2) in enumerate(regions):
+        rgb = hex_to_rgb(colors[i % len(colors)])
+        draw.rectangle([x1+1,y1+1,x2-1,y2-1], fill=rgb)
+        draw.rectangle([x1,y1,x2,y2], outline=hex_to_rgb(colors[0]), width=2)
+
+def generate_sunburst(draw, width, height, colors, rng):
+    cx, cy = width//2, height//2
+    max_r = int(math.sqrt(cx**2 + cy**2))
+    num_rays = rng.randint(12, 30)
+    ray_w = rng.uniform(0.05, 0.15)
+    for i in range(num_rays):
+        rgb = hex_to_rgb(colors[(i+1) % len(colors)])
+        base_angle = i * 2*math.pi / num_rays
+        pts = [
+            (cx, cy),
+            (cx + max_r*math.cos(base_angle - ray_w), cy + max_r*math.sin(base_angle - ray_w)),
+            (cx + max_r*math.cos(base_angle + ray_w), cy + max_r*math.sin(base_angle + ray_w)),
+        ]
+        draw.polygon(pts, fill=rgb)
+    for ri in range(5, 0, -1):
+        r = int(max_r * ri / 6)
+        rgb = hex_to_rgb(colors[ri % len(colors)])
+        draw.ellipse([cx-r, cy-r, cx+r, cy+r], outline=rgb, width=2)
+
+def generate_droplets(draw, width, height, colors, rng):
+    c1, c2 = hex_to_rgb(colors[0]), hex_to_rgb(colors[1 % len(colors)])
+    for y in range(height):
+        t = y/height
+        draw.line([(0,y),(width,y)], fill=tuple(int(c1[i]*(1-t)+c2[i]*t) for i in range(3)))
+    for i in range(rng.randint(20, 50)):
+        rgb = hex_to_rgb(colors[(i % (len(colors)-1))+1])
+        cx2 = rng.randint(0, width)
+        cy2 = rng.randint(0, height)
+        r = rng.randint(8, 30)
+        tail = rng.randint(r, r*3)
+        draw.ellipse([cx2-r, cy2-r, cx2+r, cy2+r], fill=rgb)
+        pts = [(cx2-r//2, cy2+r//2), (cx2, cy2+r+tail), (cx2+r//2, cy2+r//2)]
+        draw.polygon(pts, fill=rgb)
+        gap = rng.randint(15, 40)
+        for ri in range(1, 4):
+            rr = ri * gap
+            fade = int(180 * (1 - ri/4))
+            fc = tuple(int(v*fade//180) for v in rgb)
+            draw.ellipse([cx2-rr, cy2-rr, cx2+rr, cy2+rr], outline=fc, width=1)
+
+def generate_wire_frame(draw, width, height, colors, rng):
+    bg = hex_to_rgb(colors[0])
+    draw.rectangle([0, 0, width, height], fill=bg)
+    cols_n = rng.randint(6, 12)
+    rows_n = rng.randint(4, 8)
+    cw, rh = width // cols_n, height // rows_n
+    pts = {}
+    for r in range(rows_n+1):
+        for c in range(cols_n+1):
+            jx = rng.randint(-cw//4, cw//4)
+            jy = rng.randint(-rh//4, rh//4)
+            pts[(r,c)] = (c*cw + jx, r*rh + jy)
+    rgb1 = hex_to_rgb(colors[1 % len(colors)])
+    rgb2 = hex_to_rgb(colors[2 % len(colors)])
+    for r in range(rows_n):
+        for c in range(cols_n):
+            p1, p2 = pts[(r,c)], pts[(r,c+1)]
+            p3, p4 = pts[(r+1,c)], pts[(r+1,c+1)]
+            ci = (r+c) % len(colors)
+            draw.polygon([p1,p2,p4,p3], fill=hex_to_rgb(colors[ci]), outline=rgb1)
+            draw.line([p1,p4], fill=rgb2, width=1)
+
 def generate_cellular(draw, width, height, colors, rng):
     """Generate cellular pattern"""
     cell_size = rng.randint(20, 50)
@@ -1218,6 +2202,110 @@ def generate_pattern(width, height, pattern_type, palette_index, seed, inverted=
         generate_scales(draw, width, height, colors, rng)
     elif pattern_type == PatternType.CROSSHATCH:
         generate_crosshatch(draw, width, height, colors, rng)
+    elif pattern_type == PatternType.DNA:
+        generate_dna(draw, width, height, colors, rng)
+    elif pattern_type == PatternType.BINARY_RAIN:
+        generate_binary_rain(draw, width, height, colors, rng)
+    elif pattern_type == PatternType.RADAR:
+        generate_radar(draw, width, height, colors, rng)
+    elif pattern_type == PatternType.TOPOGRAPHIC:
+        generate_topographic(draw, width, height, colors, rng)
+    elif pattern_type == PatternType.WAVEFORM:
+        generate_waveform(draw, width, height, colors, rng)
+    elif pattern_type == PatternType.SATELLITE:
+        generate_satellite(draw, width, height, colors, rng)
+    elif pattern_type == PatternType.SONAR:
+        generate_sonar(draw, width, height, colors, rng)
+    elif pattern_type == PatternType.DATASTREAM:
+        generate_datastream(draw, width, height, colors, rng)
+    elif pattern_type == PatternType.FIBER_OPTIC:
+        generate_fiber_optic(draw, width, height, colors, rng)
+    elif pattern_type == PatternType.NEURAL:
+        generate_neural(draw, width, height, colors, rng)
+    elif pattern_type == PatternType.CORAL:
+        generate_coral(draw, width, height, colors, rng)
+    elif pattern_type == PatternType.SNOWFLAKES:
+        generate_snowflakes(draw, width, height, colors, rng)
+    elif pattern_type == PatternType.RAINDROPS:
+        generate_raindrops(draw, width, height, colors, rng)
+    elif pattern_type == PatternType.VINES:
+        generate_vines(draw, width, height, colors, rng)
+    elif pattern_type == PatternType.CLOUDS:
+        generate_clouds(draw, width, height, colors, rng)
+    elif pattern_type == PatternType.BAMBOO:
+        generate_bamboo(draw, width, height, colors, rng)
+    elif pattern_type == PatternType.CRACKS:
+        generate_cracks(draw, width, height, colors, rng)
+    elif pattern_type == PatternType.ROOTS:
+        generate_roots(draw, width, height, colors, rng)
+    elif pattern_type == PatternType.VORONOI:
+        generate_voronoi(draw, width, height, colors, rng)
+    elif pattern_type == PatternType.KALEIDOSCOPE:
+        generate_kaleidoscope(draw, width, height, colors, rng)
+    elif pattern_type == PatternType.TRIANGULAR_MESH:
+        generate_triangular_mesh(draw, width, height, colors, rng)
+    elif pattern_type == PatternType.PINWHEEL:
+        generate_pinwheel(draw, width, height, colors, rng)
+    elif pattern_type == PatternType.PRISM:
+        generate_prism(draw, width, height, colors, rng)
+    elif pattern_type == PatternType.HYPNOTIC:
+        generate_hypnotic(draw, width, height, colors, rng)
+    elif pattern_type == PatternType.PLASMA:
+        generate_plasma(draw, width, height, colors, rng)
+    elif pattern_type == PatternType.INTERFERENCE:
+        generate_interference(draw, width, height, colors, rng)
+    elif pattern_type == PatternType.TURBULENCE:
+        generate_turbulence(draw, width, height, colors, rng)
+    elif pattern_type == PatternType.INK_BLOT:
+        generate_ink_blot(draw, width, height, colors, rng)
+    elif pattern_type == PatternType.WATERCOLOR:
+        generate_watercolor(draw, width, height, colors, rng)
+    elif pattern_type == PatternType.POINTILLISM:
+        generate_pointillism(draw, width, height, colors, rng)
+    elif pattern_type == PatternType.MAZE:
+        generate_maze(draw, width, height, colors, rng)
+    elif pattern_type == PatternType.CONSTELLATION:
+        generate_constellation(draw, width, height, colors, rng)
+    elif pattern_type == PatternType.LACE:
+        generate_lace(draw, width, height, colors, rng)
+    elif pattern_type == PatternType.GLITCH:
+        generate_glitch(draw, width, height, colors, rng)
+    elif pattern_type == PatternType.STAINED_GLASS:
+        generate_stained_glass(draw, width, height, colors, rng)
+    elif pattern_type == PatternType.TOPSOIL:
+        generate_topsoil(draw, width, height, colors, rng)
+    elif pattern_type == PatternType.FISH_NET:
+        generate_fish_net(draw, width, height, colors, rng)
+    elif pattern_type == PatternType.HONEYCOMB_FLOW:
+        generate_honeycomb_flow(draw, width, height, colors, rng)
+    elif pattern_type == PatternType.PIXEL_SORT:
+        generate_pixel_sort(draw, width, height, colors, rng)
+    elif pattern_type == PatternType.SAND_RIPPLE:
+        generate_sand_ripple(draw, width, height, colors, rng)
+    elif pattern_type == PatternType.TREE_RINGS:
+        generate_tree_rings(draw, width, height, colors, rng)
+    elif pattern_type == PatternType.LIGHTNING_FIELD:
+        generate_lightning_field(draw, width, height, colors, rng)
+    elif pattern_type == PatternType.SOAP_BUBBLE:
+        generate_soap_bubble(draw, width, height, colors, rng)
+    elif pattern_type == PatternType.CELTIC_KNOT:
+        generate_celtic_knot(draw, width, height, colors, rng)
+    elif pattern_type == PatternType.METEOR_SHOWER:
+        generate_meteor_shower(draw, width, height, colors, rng)
+    elif pattern_type == PatternType.LENTICULAR:
+        generate_lenticular(draw, width, height, colors, rng)
+    elif pattern_type == PatternType.BRUSH_GRID:
+        generate_brush_grid(draw, width, height, colors, rng)
+    elif pattern_type == PatternType.NEON_GRID:
+        generate_neon_grid(draw, width, height, colors, rng)
+    elif pattern_type == PatternType.PATCHWORK:
+        generate_patchwork(draw, width, height, colors, rng)
+    elif pattern_type == PatternType.SUNBURST:
+        generate_sunburst(draw, width, height, colors, rng)
+    elif pattern_type == PatternType.DROPLETS:
+        generate_droplets(draw, width, height, colors, rng)
+    elif pattern_type == PatternType.WIRE_FRAME:
+        generate_wire_frame(draw, width, height, colors, rng)
 
     return image
 
